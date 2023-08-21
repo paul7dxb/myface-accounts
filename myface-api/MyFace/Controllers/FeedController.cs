@@ -2,6 +2,7 @@
 using MyFace.Models.Request;
 using MyFace.Models.Response;
 using MyFace.Repositories;
+using MyFace.Helpers;
 
 namespace MyFace.Controllers
 {
@@ -10,10 +11,12 @@ namespace MyFace.Controllers
     public class FeedController : ControllerBase
     {
         private readonly IPostsRepo _posts;
+        private readonly IAuthHelper _authHelper;
 
-        public FeedController(IPostsRepo posts)
+        public FeedController(IPostsRepo posts, IAuthHelper authHelper)
         {
             _posts = posts;
+             _authHelper = authHelper;
         }
 
         [HttpGet("")]

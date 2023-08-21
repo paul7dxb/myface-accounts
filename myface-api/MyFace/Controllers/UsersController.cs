@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.AspNetCore.Mvc;
+using MyFace.Helpers;
 using MyFace.Models.Request;
 using MyFace.Models.Response;
 using MyFace.Repositories;
@@ -12,12 +13,14 @@ namespace MyFace.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUsersRepo _users;
+        private readonly IAuthHelper _authHelper;
 
-        public UsersController(IUsersRepo users)
+        public UsersController(IUsersRepo users, IAuthHelper authHelper)
         {
             _users = users;
+            _authHelper = authHelper;
         }
-        
+
         [HttpGet("")]
         public ActionResult<UserListResponse> Search([FromQuery] UserSearchRequest searchRequest)
         {
@@ -40,7 +43,7 @@ namespace MyFace.Controllers
             {
                 return BadRequest(ModelState);
             }
-            
+
             var user = _users.Create(newUser);
 
             var url = Url.Action("GetById", new { id = user.Id });
@@ -56,27 +59,24 @@ namespace MyFace.Controllers
                 return BadRequest(ModelState);
             }
 
-            var headers =  Request.Headers["Authorization"].ToString();
-            string encodedData = headers.Split(" ")[1];
+            var isAuthenticated = _authHelper.IsAuthenticated(Request);
+            var isAuth = isAuthenticated.Item1;
+            var isAuthMsg = isAuthenticated.Item2;
 
-            byte[] data = Convert.FromBase64String(encodedData);
-            string decodedString = System.Text.Encoding.UTF8.GetString(data);
-            string userName = decodedString.Split(":")[0];
-            string password = decodedString.Split(":")[1];
-
-            Boolean authenticated = _users.VerifyUser(userName, password);
-            
-            if (authenticated)
+            if (isAuth)
             {
                 var user = _users.Update(id, update);
+                Console.WriteLine($"Username: {isAuthMsg} Updated!");
                 return new UserResponse(user);
-            } else
+            }
+            else
             {
-                return BadRequest(ModelState);
+                Console.WriteLine($"Username: {isAuthMsg} Not Authorized!");
+                return Unauthorized();
             }
 
         }
-        
+
         [HttpDelete("{id}")]
         public IActionResult Delete([FromRoute] int id)
         {

@@ -2,6 +2,7 @@
 using MyFace.Models.Request;
 using MyFace.Models.Response;
 using MyFace.Repositories;
+using MyFace.Helpers;
 
 namespace MyFace.Controllers
 {
@@ -10,10 +11,11 @@ namespace MyFace.Controllers
     public class InteractionsController : ControllerBase
     {
         private readonly IInteractionsRepo _interactions;
-
-        public InteractionsController(IInteractionsRepo interactions)
+           private readonly IAuthHelper _authHelper;
+        public InteractionsController(IInteractionsRepo interactions, IAuthHelper authHelper)
         {
             _interactions = interactions;
+             _authHelper = authHelper;
         }
     
         [HttpGet("")]
