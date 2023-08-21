@@ -6,7 +6,7 @@ namespace MyFace.Helpers;
 
 public interface IAuthHelper
 {
-    (bool, string) IsAuthenticated(HttpRequest request);
+    (bool, int) IsAuthenticated(HttpRequest request);
 }
 
 public class AuthHelper : IAuthHelper
@@ -17,18 +17,18 @@ public class AuthHelper : IAuthHelper
     {
         _users = users;
     }
-    public (bool, string) IsAuthenticated(HttpRequest request)
+    public (bool, int) IsAuthenticated(HttpRequest request)
     {
         var hasAuthHeader = request.Headers.TryGetValue("Authorization", out var authHeader);
 
         if (!hasAuthHeader)
         {
-            return (false, "Auth Header Error!");
+            return (false, 400);
         }
 
         if (!authHeader.ToString().StartsWith("Basic "))
         {
-            return (false, "Auth Header Basic Not Found!");
+            return (false, 400);
         }
 
         var encodedData = authHeader.ToString().Split(" ")[1];
@@ -37,7 +37,9 @@ public class AuthHelper : IAuthHelper
         var userName = decodedString.Split(":")[0];
         var password = decodedString.Split(":")[1];
         var authenticated = _users.VerifyUser(userName, password);
+        var user = _users.GetUserByUsername(userName);
 
-        return (authenticated, userName);
+
+        return (authenticated, user.Id);
     }
 }

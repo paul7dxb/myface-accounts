@@ -11,7 +11,9 @@ export function Login(): JSX.Element {
     
     function tryLogin(event: FormEvent) {
         event.preventDefault();
-        loginContext.logIn();
+        const userBaseString = `${username}:${password}`
+        const userBase = btoa(userBaseString);
+        loginContext.logIn(userBase);
     }
     
     return (

@@ -18,6 +18,7 @@ namespace MyFace.Repositories
         void Delete(int id);
 
         Boolean VerifyUser(string userName, string submittedPassword);
+        User GetUserByUsername(string username);
 
     }
     
@@ -118,7 +119,7 @@ namespace MyFace.Repositories
             return submittedHash == user.HashedPassword;
         }
 
-        private User GetUserByUsername(string username)
+        public User GetUserByUsername(string username)
         {
             return _context.Users
                 .Single(user => user.Username == username);

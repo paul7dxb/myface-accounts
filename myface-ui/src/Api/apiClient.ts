@@ -83,3 +83,19 @@ export async function createPost(newPost: NewPost) {
         throw new Error(await response.json())
     }
 }
+
+export async function userLogin(userBase: string) {
+    const response = await fetch(`https://localhost:5001/login`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization" : `Basic ${userBase}`
+        },
+    });
+    
+    if (!response.ok) {
+        throw new Error(await response.json())
+    }
+
+    return response;
+}

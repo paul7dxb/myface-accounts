@@ -61,17 +61,17 @@ namespace MyFace.Controllers
 
             var isAuthenticated = _authHelper.IsAuthenticated(Request);
             var isAuth = isAuthenticated.Item1;
-            var isAuthMsg = isAuthenticated.Item2;
+            var AutResponse = isAuthenticated.Item2;
 
             if (isAuth)
             {
                 var user = _users.Update(id, update);
-                Console.WriteLine($"Username: {isAuthMsg} Updated!");
+                Console.WriteLine($"UserId: {AutResponse} Updated!");
                 return new UserResponse(user);
             }
             else
             {
-                Console.WriteLine($"Username: {isAuthMsg} Not Authorized!");
+                Console.WriteLine($"UserId: {AutResponse} Not Authorized!");
                 return Unauthorized();
             }
 
