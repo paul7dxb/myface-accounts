@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MyFace.Models.Database;
+using MyFace.Helpers;
 
 namespace MyFace.Data
 {
@@ -119,12 +120,20 @@ namespace MyFace.Data
 
         private static User CreateRandomUser(int index)
         {
+            string testPassword = "password123";
+            string salt = HashingAlgorithm.CreateSalt();
+            string saltAndPassword = testPassword + salt;
+
+            string hashedPassword = HashingAlgorithm.ComputeSha256Hash(saltAndPassword);
             return new User
             {
+
                 FirstName = Data[index][0],
                 LastName = Data[index][1],
                 Username = Data[index][2],
                 Email = Data[index][3],
+                HashedPassword = hashedPassword,
+                Salt = salt,
                 ProfileImageUrl = ImageGenerator.GetProfileImage(Data[index][2]),
                 CoverImageUrl = ImageGenerator.GetCoverImage(index),
             };
