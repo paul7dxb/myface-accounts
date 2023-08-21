@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Http.Headers;
+using Microsoft.AspNetCore.Mvc;
 using MyFace.Models.Request;
 using MyFace.Models.Response;
 using MyFace.Repositories;
@@ -54,8 +56,25 @@ namespace MyFace.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = _users.Update(id, update);
-            return new UserResponse(user);
+            var headers =  Request.Headers["Authorization"].ToString();
+            string encodedData = headers.Split(" ")[1];
+
+            byte[] data = Convert.FromBase64String(encodedData);
+            string decodedString = System.Text.Encoding.UTF8.GetString(data);
+            string userName = decodedString.Split(":")[0];
+            string password = decodedString.Split(":")[1];
+
+            Boolean authenticated = _users.VerifyUser(userName, password);
+            
+            if (authenticated)
+            {
+                var user = _users.Update(id, update);
+                return new UserResponse(user);
+            } else
+            {
+                return BadRequest(ModelState);
+            }
+
         }
         
         [HttpDelete("{id}")]

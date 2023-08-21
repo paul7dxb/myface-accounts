@@ -3,6 +3,8 @@ using System.Linq;
 using MyFace.Models.Database;
 using MyFace.Models.Request;
 using MyFace.Helpers;
+using System;
+using System.Runtime.CompilerServices;
 
 namespace MyFace.Repositories
 {
@@ -14,6 +16,9 @@ namespace MyFace.Repositories
         User Create(CreateUserRequest newUser);
         User Update(int id, UpdateUserRequest update);
         void Delete(int id);
+
+        Boolean VerifyUser(string userName, string submittedPassword);
+
     }
     
     public class UsersRepo : IUsersRepo
@@ -63,7 +68,7 @@ namespace MyFace.Repositories
             string salt = HashingAlgorithm.CreateSalt();
             string saltAndPassword = newUser.Password + salt;
 
-            string hashedPassword = HashingAlgorithm.ComputeSha256Hash(saltAndPassword);
+            string hashedPassword = HashingAlgorithm.ComputeSha512Hash(saltAndPassword);
 
             var insertResponse = _context.Users.Add(new User
             {
@@ -103,6 +108,20 @@ namespace MyFace.Repositories
             var user = GetById(id);
             _context.Users.Remove(user);
             _context.SaveChanges();
+        }
+
+        public Boolean VerifyUser(string userName, string submittedPassword)
+        {
+            var user = GetUserByUsername(userName);
+            string submittedSalt = string.Concat(submittedPassword , user.Salt);            
+            var submittedHash = HashingAlgorithm.ComputeSha512Hash(submittedSalt);
+            return submittedHash == user.HashedPassword;
+        }
+
+        private User GetUserByUsername(string username)
+        {
+            return _context.Users
+                .Single(user => user.Username == username);
         }
     }
 }

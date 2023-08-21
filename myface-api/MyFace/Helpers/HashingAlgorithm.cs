@@ -6,13 +6,14 @@ namespace MyFace.Helpers
 {
     class HashingAlgorithm
     {
-        public static string ComputeSha256Hash(string rawData)
+        public static string ComputeSha512Hash(string rawData)
         {
             // Create a SHA256
-            using (SHA256 sha256Hash = SHA256.Create())
+            using (SHA512 sha512Hash = SHA512.Create())
+            // using (SHA256 sha256Hash = SHA256.Create())
             {
                 // ComputeHash - returns byte array
-                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
+                byte[] bytes = sha512Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
 
                 // Convert byte array to a string
                 StringBuilder builder = new StringBuilder();

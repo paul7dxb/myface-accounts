@@ -124,7 +124,7 @@ namespace MyFace.Data
             string salt = HashingAlgorithm.CreateSalt();
             string saltAndPassword = testPassword + salt;
 
-            string hashedPassword = HashingAlgorithm.ComputeSha256Hash(saltAndPassword);
+            string hashedPassword = HashingAlgorithm.ComputeSha512Hash(saltAndPassword);
             return new User
             {
 
