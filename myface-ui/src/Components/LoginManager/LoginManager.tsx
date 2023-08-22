@@ -19,8 +19,9 @@ export function LoginManager(props: LoginManagerProps): JSX.Element {
         const response = await userLogin(userBase);
         if (!response.ok) {
             setLoggedIn(false);
+        } else{
+            setLoggedIn(true);
         }
-        setLoggedIn(true);
     }
 
     function logOut() {
