@@ -15,7 +15,7 @@ namespace MyFace.Controllers
         public PostsController(IPostsRepo posts, IAuthHelper authHelper)
         {
             _posts = posts;
-             _authHelper = authHelper;
+            _authHelper = authHelper;
         }
 
         [HttpGet("")]
@@ -72,6 +72,16 @@ namespace MyFace.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete([FromRoute] int id)
         {
+
+            var isAuthenticated = _authHelper.IsAuthenticated(Request);
+            var isAuth = isAuthenticated.Item1;
+            var isAuthResponse = isAuthenticated.Item2;
+            var isAdmin = isAuthenticated.Item3;
+
+            if(!isAdmin){
+                return Unauthorized();
+            }
+
             _posts.Delete(id);
             return Ok();
         }

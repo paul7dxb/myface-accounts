@@ -80,6 +80,13 @@ namespace MyFace.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete([FromRoute] int id)
         {
+
+            var isAuthenticated = _authHelper.IsAuthenticated(Request);
+            var isAuth = isAuthenticated.Item1;
+            var AuthResponse = isAuthenticated.Item2;
+
+            
+        
             _users.Delete(id);
             return Ok();
         }

@@ -42,6 +42,7 @@ export function LoginManager(props: LoginManagerProps): JSX.Element {
 
     function logOut() {
         setBase("");
+        setAdmin(false);
         setLoggedIn(false);
     }
 

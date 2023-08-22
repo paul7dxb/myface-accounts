@@ -74,11 +74,11 @@ export async function createPost(newPost: NewPost, userBase: string) {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization" : `Basic ${userBase}`
+            "Authorization": `Basic ${userBase}`
         },
         body: JSON.stringify(newPost),
     });
-    
+
     if (!response.ok) {
         throw new Error(await response.json())
     }
@@ -89,10 +89,22 @@ export async function userLogin(userBase: string) {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization" : `Basic ${userBase}`
+            "Authorization": `Basic ${userBase}`
         },
     });
 
+    return response;
+}
+
+export async function deletePost(userBase: string, postId: number) {
+    const response = await fetch(`https://localhost:5001/posts/${postId}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Basic ${userBase}`
+        },
+
+    });
 
     return response;
 }

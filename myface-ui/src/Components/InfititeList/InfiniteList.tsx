@@ -28,7 +28,7 @@ export function InfiniteList<T>(props: InfiniteListProps<T>): JSX.Element {
     useEffect(() => {
         props.fetchItems(1, 10)
             .then(replaceItems);
-    }, [props]);
+    }, [props, items]);
 
     function incrementPage() {
         props.fetchItems(page + 1, 10)
