@@ -70,11 +70,12 @@ export async function fetchPostsDislikedBy(page: number, pageSize: number, userI
     return await response.json();
 }
 
-export async function createPost(newPost: NewPost) {
+export async function createPost(newPost: NewPost, userBase: string) {
     const response = await fetch(`https://localhost:5001/posts/create`, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization" : `Basic ${userBase}`
         },
         body: JSON.stringify(newPost),
     });
@@ -92,10 +93,7 @@ export async function userLogin(userBase: string) {
             "Authorization" : `Basic ${userBase}`
         },
     });
-    
-    if (!response.ok) {
-        throw new Error(await response.json())
-    }
+
 
     return response;
 }
