@@ -16,6 +16,7 @@ interface LoginManagerProps {
 
 export function LoginManager(props: LoginManagerProps): JSX.Element {
     const [loggedIn, setLoggedIn] = useState(false);
+    const [admin, setAdmin] = useState(false);
     const [base, setBase] = useState("");
 
     async function logIn(submittedUserBase: string) {
@@ -28,6 +29,12 @@ export function LoginManager(props: LoginManagerProps): JSX.Element {
             }
             return <Redirect to='/login'  />
         } else{
+            var responseBody = await response.json();
+            console.log(responseBody)
+            if(responseBody && responseBody.role === 1)
+            {
+                setAdmin(true);
+            }
             setBase(submittedUserBase);
             setLoggedIn(true);
         }
@@ -41,7 +48,7 @@ export function LoginManager(props: LoginManagerProps): JSX.Element {
     const context = {
         userBase: base,
         isLoggedIn: loggedIn,
-        isAdmin: loggedIn,
+        isAdmin: admin,
         logIn: logIn,
         logOut: logOut,
     };
