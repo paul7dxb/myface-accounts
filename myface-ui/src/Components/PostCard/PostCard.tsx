@@ -9,20 +9,13 @@ import { deletePost } from '../../Api/apiClient';
 
 interface PostCardProps {
     post: Post;
+    handleDelete: (id:number) => void;
 }
 
 export function PostCard(props: PostCardProps): JSX.Element {
     const loginContext = useContext(LoginContext);
 
     const { isAdmin, userBase } = loginContext;
-
-    const deleteHandler = async (id: number) => {
-        const response = await deletePost(userBase, id);
-
-    }
-
- 
-
 
     return (
         <Card>
@@ -32,7 +25,7 @@ export function PostCard(props: PostCardProps): JSX.Element {
                 {
                     isAdmin &&
                     <div className="post-card-admin">
-                        <button onClick={() => deleteHandler(props.post.id)}>Delete Post</button>
+                        <button onClick={() => props.handleDelete(props.post.id)}>Delete Post</button>
                     </div>
                 }
                 <div className="user">

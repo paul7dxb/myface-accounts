@@ -5,7 +5,7 @@ import {PostCard} from "../PostCard/PostCard";
 
 interface PostListProps {
     title: string,
-    fetchPosts: () => Promise<ListResponse<Post>>
+    fetchPosts: () => Promise<ListResponse<Post>>,
 }
 
 export function PostList(props: PostListProps): JSX.Element {
@@ -20,7 +20,7 @@ export function PostList(props: PostListProps): JSX.Element {
         <section>
             <h2>{props.title}</h2>
             <Grid>
-                {posts.map(post => <PostCard key={post.id} post={post}/>)}
+                {posts.map(post => <PostCard key={post.id} post={post} handleDelete={() => {}}/>)}
             </Grid>
         </section>
     );
