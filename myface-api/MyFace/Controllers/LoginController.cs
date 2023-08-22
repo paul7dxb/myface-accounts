@@ -4,6 +4,9 @@ using MyFace.Models.Response;
 using MyFace.Repositories;
 using MyFace.Helpers;
 using System;
+using System.Net;
+using Microsoft.AspNetCore.Http;
+using System.Linq.Expressions;
 
 namespace MyFace.Controllers
 {
@@ -21,15 +24,22 @@ namespace MyFace.Controllers
         }
 
         [HttpPost("")]
-        public IActionResult Login()
+        public ActionResult<AdminResponse> Login()
         {
             var isAuthenticated = _authHelper.IsAuthenticated(Request);
             var isAuth = isAuthenticated.Item1;
             var isAuthResponse = isAuthenticated.Item2;
+            var isAdmin = isAuthenticated.Item3;
+
+            var userAdmin = new { userAdmin = isAdmin };
 
             if (isAuth)
             {   
-                
+                if(isAdmin){
+                    
+                    return new AdminResponse();
+                }
+
                 return Ok();
             }
             else

@@ -6,7 +6,7 @@ namespace MyFace.Helpers;
 
 public interface IAuthHelper
 {
-    (bool, int) IsAuthenticated(HttpRequest request);
+    (bool, int, bool) IsAuthenticated(HttpRequest request);
 }
 
 public class AuthHelper : IAuthHelper
@@ -17,18 +17,18 @@ public class AuthHelper : IAuthHelper
     {
         _users = users;
     }
-    public (bool, int) IsAuthenticated(HttpRequest request)
+    public (bool, int, bool) IsAuthenticated(HttpRequest request)
     {
         var hasAuthHeader = request.Headers.TryGetValue("Authorization", out var authHeader);
 
         if (!hasAuthHeader)
         {
-            return (false, 400);
+            return (false, 400, false);
         }
 
         if (!authHeader.ToString().StartsWith("Basic "))
         {
-            return (false, 400);
+            return (false, 400, false);
         }
 
         var encodedData = authHeader.ToString().Split(" ")[1];
@@ -38,7 +38,7 @@ public class AuthHelper : IAuthHelper
         var splitString = decodedString.Split(":");
         if(splitString.Length < 2)
         {
-            return (false, 400);
+            return (false, 400, false);
         }
 
         string password;
@@ -66,12 +66,12 @@ public class AuthHelper : IAuthHelper
         var authenticated = _users.VerifyUser(userName, password);
         if(!authenticated)
         {
-            return (false, 400);
+            return (false, 400, false);
         }
 
         var (userFound, user) = _users.GetUserByUsername(userName);
-        
+        var isAdmin = user.Role == Models.Database.Role.ADMIN;
 
-        return (authenticated, user.Id);
+        return (authenticated, user.Id, isAdmin);
     }
 }

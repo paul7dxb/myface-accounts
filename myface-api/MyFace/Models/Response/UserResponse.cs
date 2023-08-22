@@ -19,5 +19,6 @@ namespace MyFace.Models.Response
         public string Email => _user.Email;
         public string ProfileImageUrl => _user.ProfileImageUrl;
         public string CoverImageUrl => _user.CoverImageUrl;
+    
     }
 }

@@ -134,6 +134,7 @@ namespace MyFace.Data
                 Email = Data[index][3],
                 HashedPassword = hashedPassword,
                 Salt = salt,
+                Role = Role.MEMBER,
                 ProfileImageUrl = ImageGenerator.GetProfileImage(Data[index][2]),
                 CoverImageUrl = ImageGenerator.GetCoverImage(index),
             };
