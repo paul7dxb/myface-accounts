@@ -41,7 +41,16 @@ namespace MyFace.Controllers
                 return BadRequest(ModelState);
             }
 
-            var post = _posts.Create(newPost);
+            var isAuthenticated = _authHelper.IsAuthenticated(Request);
+            var isAuth = isAuthenticated.Item1;
+            if (!isAuth)
+            {
+
+                return Unauthorized();
+            }
+
+            var userId = isAuthenticated.Item2;
+            var post = _posts.Create(newPost, userId);
 
             var url = Url.Action("GetById", new { id = post.Id });
             var postResponse = new PostResponse(post);

@@ -5,6 +5,9 @@ using MyFace.Models.Request;
 using MyFace.Helpers;
 using System;
 using System.Runtime.CompilerServices;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Http;
+using System.Net;
 
 namespace MyFace.Repositories
 {
@@ -18,7 +21,7 @@ namespace MyFace.Repositories
         void Delete(int id);
 
         Boolean VerifyUser(string userName, string submittedPassword);
-        User GetUserByUsername(string username);
+        (bool, User) GetUserByUsername(string username);
 
     }
     
@@ -113,16 +116,32 @@ namespace MyFace.Repositories
 
         public Boolean VerifyUser(string userName, string submittedPassword)
         {
-            var user = GetUserByUsername(userName);
+
+            (bool userFound, User user) = GetUserByUsername(userName);
+
+            if(!userFound)
+            {
+                return false;
+            }
+            
             string submittedSalt = string.Concat(submittedPassword , user.Salt);            
             var submittedHash = HashingAlgorithm.ComputeSha512Hash(submittedSalt);
             return submittedHash == user.HashedPassword;
         }
 
-        public User GetUserByUsername(string username)
+        public (bool, User) GetUserByUsername(string username)
         {
-            return _context.Users
-                .Single(user => user.Username == username);
+
+            var user = _context.Users
+                .SingleOrDefault(user => user.Username == username); 
+
+            if (user == null)
+            {
+                return (false, user);
+            }
+
+            return (true, user);
+            
         }
     }
 }

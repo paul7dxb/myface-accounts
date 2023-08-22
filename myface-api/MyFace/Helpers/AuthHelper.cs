@@ -64,8 +64,13 @@ public class AuthHelper : IAuthHelper
         Console.WriteLine($"Password: {password}");
 
         var authenticated = _users.VerifyUser(userName, password);
-        var user = _users.GetUserByUsername(userName);
+        if(!authenticated)
+        {
+            return (false, 400);
+        }
 
+        var (userFound, user) = _users.GetUserByUsername(userName);
+        
 
         return (authenticated, user.Id);
     }
